@@ -9,7 +9,6 @@ const chalk = require('chalk')
 const FileType = require('file-type')
 const path = require('path')
 const axios = require('axios')
-const zlib = require('zlib')
 const { getPrefixes, setPrefixes, addPrefix, removePrefix } = require('./lib/prefixManager')
 const { handleMessages, handleGroupParticipantUpdate, handleStatus } = require('./main');
 const PhoneNumber = require('awesome-phonenumber')
@@ -65,7 +64,8 @@ setInterval(() => {
 }, 30_000) // check every 30 seconds
 
 let phoneNumber = `${settings.ownerNumber || ''}`.replace(/[^0-9]/g, '');
-let owner = JSON.parse(fs.readFileSync('./data/owner.json'))
+const _ownRaw = fs.existsSync('./data/owner.json') ? fs.readFileSync('./data/owner.json', 'utf8').trim() : '';
+let owner = _ownRaw ? JSON.parse(_ownRaw) : [];
 
 global.botname = "Moon-X"
 const CUSTOM_CODE = "MRKEITHX"
@@ -89,7 +89,6 @@ const question = (text) => {
 }
 
 // SESSION ID FUNCTIONS
-
 async function downloadSessionData() {
     try {
         await fs.promises.mkdir(sessionDir, { recursive: true });
@@ -97,47 +96,49 @@ async function downloadSessionData() {
         if (!fs.existsSync(credsPath)) {
             if (!settings.SESSION_ID) {
                 console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.red('⚠️ Session ID not found in .env!')}`);
+                
                 console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.red('⚠️ creds.json not found in session folder!')}`);
+                
                 console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.red('Will use pairing code instead...')}`);
                 return false;
             }
 
-            // Check if it's a KnightBot! format session
-            if (settings.SESSION_ID.startsWith('KeithTech~!')) {
-                try {
-                    console.log(`${chalk.cyan('[ MOON-X ]')} ${chalk.yellow('🔰 Processing MoonX session...')}`);
-                    
-                    const [header, b64data] = settings.SESSION_ID.split('!');
+            console.log(`${chalk.cyan('[ MOON-X ]')} ${chalk.green('📥 Downloading session data from SESSION_ID...')}`);
+console.log(`${chalk.cyan('[ Moon-X ]')} ${chalk.yellow('🔰 Downloading MEGA.nz session...')}`);
+            
+            // Remove "Moon~" prefix if present, otherwise use full SESSION_ID
+            const megaFileId = settings.SESSION_ID.startsWith('KeithTech~') 
+                ? settings.SESSION_ID.replace("KeithTech~", "") 
+                : settings.SESSION_ID;
 
-                    if (header !== 'KeithTech~' || !b64data) {
-                        throw new Error("❌ Invalid session format. Expected 'KeithTech!.....'");
-                    }
+            try {
+                const filer = File.fromURL(`https://mega.nz/file/${megaFileId}`);
+                
+                const sessionData = await new Promise((resolve, reject) => {
+                    filer.download((err, data) => {
+                        if (err) reject(err);
+                        else resolve(data);
+                    });
+                });
+                
+                await fs.promises.writeFile(credsPath, sessionData);
+                console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.green('✅ MEGA session downloaded successfully!')}`);
+return true;
 
-                    const cleanB64 = b64data.replace('...', '');
-                    const compressedData = Buffer.from(cleanB64, 'base64');
-                    const decompressedData = require('zlib').gunzipSync(compressedData);
+} catch (megaError) {
 
-                    // Write decompressed session data to creds.json
-                    fs.writeFileSync(credsPath, decompressedData, 'utf8');
-                    console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.green('✅ Session retrieved from Moon-X Session!')}`);
-                    return true;
+console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.red('❌ Error downloading from MEGA:')} ${megaError.message}`);
+console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.yellow('⚠️ Invalid MEGA file ID or file not accessible')}`);
 
-                } catch (e) {
-                    console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.red('❌ Error processing Moon-X session:')} ${e.message}`);
-                    console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.yellow('⚠️ Invalid session format or corrupted data')}`);
-                    return false;
-                }
-            } else {
-                console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.red('❌ Invalid session format!')}`);
-                console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.yellow('⚠️ Session ID must start with "KeithTech!"')}`);
                 return false;
             }
         } else {
             console.log(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.green('✅ Using existing creds.json')}`);
-            return true;
-        } 
-    } catch (error) {
-        console.error(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.red('❌ Error processing session data:')} ${error.message}`);
+return true;
+} 
+} catch (error) {
+console.error(`${chalk.hex('#218895')('[ MOON-X ]')} ${chalk.red('❌ Error processing session data:')} ${error.message}`);
+
         return false;
     }
 }

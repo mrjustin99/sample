@@ -404,7 +404,7 @@ if (message.message?.editedMessage) {
         // Read bot mode once; don't early-return so moderation can still run in private mode
         let isPublic = true;
         try {
-            const data = JSON.parse(fs.readFileSync('./data/messageCount.json'));
+            const _mc1 = fs.readFileSync('./data/messageCount.json','utf8').trim(); const data = _mc1 ? JSON.parse(_mc1) : {};
             if (typeof data.isPublic === 'boolean') isPublic = data.isPublic;
         } catch (error) {
             console.error(chalk.red('Error checking access mode:'), error);
@@ -808,7 +808,7 @@ case userMessage === 'tutorial' || userMessage === 'tuto' || userMessage === 'gu
                 // Read current data first
                 let data;
                 try {
-                    data = JSON.parse(fs.readFileSync('./data/messageCount.json'));
+                    const _mc2 = fs.readFileSync('./data/messageCount.json','utf8').trim(); data = _mc2 ? JSON.parse(_mc2) : {};
                 } catch (error) {
                     data = {};
                     console.error('Error reading access mode:', error);
@@ -1684,7 +1684,7 @@ async function handleGroupParticipantUpdate(sock, update) {
         // Respect bot mode: only announce promote/demote in public mode
         let isPublic = true;
         try {
-            const modeData = JSON.parse(fs.readFileSync('./data/messageCount.json'));
+            const _mc3 = fs.readFileSync('./data/messageCount.json','utf8').trim(); const modeData = _mc3 ? JSON.parse(_mc3) : {};
             if (typeof modeData.isPublic === 'boolean') isPublic = modeData.isPublic;
         } catch (e) {
             // If reading fails, default to public behavior

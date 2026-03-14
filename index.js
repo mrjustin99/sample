@@ -103,13 +103,13 @@ async function downloadSessionData() {
             }
 
             // Check if it's a KnightBot! format session
-            if (settings.SESSION_ID.startsWith('KeithTech~')) {
+            if (settings.SESSION_ID.startsWith('KeithTech')) {
                 try {
                     console.log(`${chalk.cyan('[ MOON-X ]')} ${chalk.yellow('🔰 Processing MoonX session...')}`);
                     
-                    const [header, b64data] = settings.SESSION_ID.split('!');
+                    const [header, b64data] = settings.SESSION_ID.split('~');
 
-                    if (header !== 'KeithTech~' || !b64data) {
+                    if (header !== 'KeithTech' || !b64data) {
                         throw new Error("❌ Invalid session format. Expected 'KeithTech!.....'");
                     }
 

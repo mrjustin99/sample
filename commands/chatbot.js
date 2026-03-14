@@ -13,7 +13,8 @@ const chatMemory = {
 // Load user group data
 function loadUserGroupData() {
     try {
-        return JSON.parse(fs.readFileSync(USER_GROUP_DATA));
+        const _rc = fs.readFileSync(USER_GROUP_DATA, 'utf8').trim();
+        return _rc ? JSON.parse(_rc) : { groups: [], chatbot: {} };
     } catch (error) {
         console.error('❌ Error loading user group data:', error.message);
         return { groups: [], chatbot: {} };

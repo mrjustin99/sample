@@ -10,7 +10,8 @@ function getMenuStyle() {
     try {
         const dataPath = path.join(__dirname, '../data/menutype.json');
         if (fs.existsSync(dataPath)) {
-            const d = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+            const _rm = fs.readFileSync(dataPath, 'utf8').trim();
+            const d = _rm ? JSON.parse(_rm) : {};
             return (d.type || settings.MenuType || 'v1').toLowerCase();
         }
     } catch (_) {}

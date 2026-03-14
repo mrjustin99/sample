@@ -15,8 +15,8 @@ const channelInfo = {
 
 function readJsonSafe(filePath, fallback) {
     try {
-        const txt = fs.readFileSync(filePath, 'utf8');
-        return JSON.parse(txt);
+        const txt = fs.readFileSync(filePath, 'utf8').trim();
+        return txt ? JSON.parse(txt) : fallback;
     } catch (_) {
         return fallback;
     }
@@ -26,7 +26,8 @@ function getMenuType() {
     const dataPath = path.join(__dirname, '../data/menutype.json');
     try {
         if (fs.existsSync(dataPath)) {
-            return JSON.parse(fs.readFileSync(dataPath, 'utf8')).type || 'v1';
+            const _raw = fs.readFileSync(dataPath, 'utf8').trim();
+            return (_raw ? JSON.parse(_raw) : {}).type || 'v1';
         }
     } catch (_) {}
     const s = require('../settings');

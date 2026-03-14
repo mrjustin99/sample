@@ -82,7 +82,8 @@ async function warnCommand(sock, chatId, senderId, mentionedJids, message) {
             // Read warnings, create empty object if file is empty
             let warnings = {};
             try {
-                warnings = JSON.parse(fs.readFileSync(warningsPath, 'utf8'));
+                const _rw = fs.readFileSync(warningsPath, 'utf8').trim();
+                warnings = _rw ? JSON.parse(_rw) : {};
             } catch (error) {
                 warnings = {};
             }

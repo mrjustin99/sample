@@ -36,7 +36,7 @@ async function autoStatusCommand(sock, chatId, msg, args) {
         }
 
         // Read current config
-        let config = JSON.parse(fs.readFileSync(configPath));
+        const _as1 = fs.readFileSync(configPath, 'utf8').trim(); let config = _as1 ? JSON.parse(_as1) : { enabled: false };
 
         // If no arguments, show current status
         if (!args || args.length === 0) {
@@ -116,7 +116,7 @@ async function autoStatusCommand(sock, chatId, msg, args) {
 // Function to check if auto status is enabled
 function isAutoStatusEnabled() {
     try {
-        const config = JSON.parse(fs.readFileSync(configPath));
+        const _asr = fs.readFileSync(configPath, 'utf8').trim(); const config = _asr ? JSON.parse(_asr) : { enabled: false };
         return config.enabled;
     } catch (error) {
         console.error('Error checking auto status config:', error);
@@ -127,7 +127,7 @@ function isAutoStatusEnabled() {
 // Function to check if status reactions are enabled
 function isStatusReactionEnabled() {
     try {
-        const config = JSON.parse(fs.readFileSync(configPath));
+        const _asr = fs.readFileSync(configPath, 'utf8').trim(); const config = _asr ? JSON.parse(_asr) : { enabled: false };
         return config.reactOn;
     } catch (error) {
         console.error('Error checking status reaction config:', error);

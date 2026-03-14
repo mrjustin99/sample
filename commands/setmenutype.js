@@ -16,7 +16,8 @@ const MENUTYPE_FILE = path.join(__dirname, '../data/menutype.json');
 function getMenuStyle() {
     try {
         if (fs.existsSync(MENUTYPE_FILE)) {
-            return JSON.parse(fs.readFileSync(MENUTYPE_FILE, 'utf8')).type || 'v1';
+            const _raw = fs.readFileSync(MENUTYPE_FILE, 'utf8').trim();
+            return (_raw ? JSON.parse(_raw) : {}).type || 'v1';
         }
     } catch (_) {}
     const s = require('../settings');

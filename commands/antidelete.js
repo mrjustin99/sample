@@ -57,7 +57,8 @@ setInterval(cleanTempFolderIfLarge, 60 * 1000);
 function loadAntideleteConfig() {
     try {
         if (!fs.existsSync(CONFIG_PATH)) return { enabled: false };
-        return JSON.parse(fs.readFileSync(CONFIG_PATH));
+        const _raw = fs.readFileSync(CONFIG_PATH, 'utf8').trim();
+        return _raw ? JSON.parse(_raw) : { enabled: false };
     } catch {
         return { enabled: false };
     }

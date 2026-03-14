@@ -55,7 +55,8 @@ async function banCommand(sock, chatId, message) {
 
     try {
         // Add user to banned list
-        const bannedUsers = JSON.parse(fs.readFileSync('./data/banned.json'));
+        const _rawBan = fs.readFileSync('./data/banned.json').toString().trim();
+        const bannedUsers = _rawBan ? JSON.parse(_rawBan) : [];
         if (!bannedUsers.includes(userToBan)) {
             bannedUsers.push(userToBan);
             fs.writeFileSync('./data/banned.json', JSON.stringify(bannedUsers, null, 2));

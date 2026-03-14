@@ -15,7 +15,10 @@ const channelInfo = {
 
 function readState() {
     try {
-        if (fs.existsSync(APPROVAL_FILE)) return JSON.parse(fs.readFileSync(APPROVAL_FILE, 'utf8'));
+        if (fs.existsSync(APPROVAL_FILE)) {
+            const _raw = fs.readFileSync(APPROVAL_FILE, 'utf8').trim();
+            return _raw ? JSON.parse(_raw) : { enabled: false, groups: [] };
+        }
     } catch (_) {}
     return { enabled: false, groups: [] };
 }

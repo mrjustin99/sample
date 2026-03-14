@@ -14,7 +14,7 @@ function initConfig() {
     if (!fs.existsSync(configPath)) {
         fs.writeFileSync(configPath, JSON.stringify({ enabled: false }, null, 2));
     }
-    return JSON.parse(fs.readFileSync(configPath));
+    const _rt = fs.readFileSync(configPath, 'utf8').trim(); return _rt ? JSON.parse(_rt) : { enabled: false };
 }
 
 // Toggle autotyping feature

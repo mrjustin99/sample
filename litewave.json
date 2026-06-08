@@ -1,0 +1,41 @@
+{
+  "name": "MOON-X",
+  "description": "Multi Device Whatsapp bot By Keith Tech",
+  "logo": "http://keith-cdn.zone.id/file/s3z5a6.png",
+  "documentation": "https://auth.moonx.gleeze.com",
+    "keywords": ["MOON-X"],
+  "success_url": "/",
+  "stack": "heroku-24",
+  "env": {
+    "SESSION_ID": {
+      "description": "Put your Moon X session-id here.",
+      "required": true,
+      "value": ""
+    },
+    "OWNER_NUMBER": {
+      "description": "Put your number e.g 26378xxx",
+      "required": true,
+      "value": ""
+    },
+    "PREFIXES": {
+      "description": "Bot command prefix (e.g.,#, !, /, etc.).",
+      "required": true,
+      "value": ""
+    },
+   "COMMAND_MODE": {
+    "description": "Bot mode public/private",
+    "required": true,
+    "value": ""
+    },
+    "TIME_ZONE": {
+      "description": "Your time zone e.g Africa/Harare.",
+      "required": false,
+      "value": ""
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
+    }
+  ]
+}
